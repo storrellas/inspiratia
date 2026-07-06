@@ -34,7 +34,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
       <main className="flex w-screen h-screen">
-        <section className="w-1/8 text-white font-bold min-w-48 sidebar">          
+        <section className="w-1/8 text-white font-bold min-w-48 inspiratia-bg-color">          
           <div className="p-3 pt-6">
             <Image src="/inspiratia_logo.svg" alt="Description" width={200} height={100} />
           </div>
