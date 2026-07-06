@@ -38,10 +38,11 @@ export default function Home() {
     e.preventDefault();
 
     let dataFullLocal = JSON.parse(JSON.stringify(dataFull.current));
-    console.log("Filtering data with filter:", typeof(filter.id));
-    if( filter.id )
+    console.log("Filtering data with filter:", filter);
+    if( filter.id !== null && filter.id != 0 ) {
       dataFullLocal = dataFullLocal.filter((item: Item) => item.id === filter.id);
-    if( filter.userId)
+    }
+    if( filter.userId !== null && filter.userId != 0 )
       dataFullLocal = dataFullLocal.filter((item: Item) => item.userId === filter.userId);
     if( filter.title.length > 0)
       dataFullLocal = dataFullLocal.filter((item: Item) => item.title.toLowerCase().includes(filter.title.toLowerCase()));
@@ -49,14 +50,20 @@ export default function Home() {
       dataFullLocal = dataFullLocal.filter((item: Item) => item.body.toLowerCase().includes(filter.body.toLowerCase()));
 
 
-    console.log("Filtered data:", dataFullLocal, dataFull.current);
-
     setData(dataFullLocal);
     setDataDisplay(dataFullLocal.slice(0, 10));
     currentPageRef.current = 0; // Reset to first page
 
-    setFilter(new Item(null, null, "", ""));
+    // setFilter(new Item(null, null, "", ""));
   };
+
+  const onReset = () => {
+    console.log("Resetting filter and data display");
+    setFilter(new Item(null, null, "", ""));
+    setData(dataFull.current);
+    setDataDisplay(dataFull.current.slice(0, 10));
+    currentPageRef.current = 0; // Reset to first page
+  }
 
   // ------------------------------
   // Hooks
@@ -66,15 +73,17 @@ export default function Home() {
     ( async () => {
       try{
         const response = await axios.get("https://jsonplaceholder.typicode.com/posts");
-        dataFull.current = response.data;
-        setData(response.data);
-        setDataDisplay(response.data.splice(0, 10));
+        dataFull.current = JSON.parse(JSON.stringify(response.data));
+        setData(dataFull.current);
+        setDataDisplay(dataFull.current.slice(0, 10));
       }catch(err){
         console.error(err);
         alert("Error fetching data. Please check the console for details.");
       }
     })()
   }, []);
+
+  console.log("filter:", filter);
 
   return <div className="h-full flex flex-col">
           <div className="rounded-lg border border-gray-200 shadow-sm p-5 mb-4">
@@ -87,7 +96,7 @@ export default function Home() {
                   <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">
                     ID:
                   </label>
-                  <input type="number"  placeholder="Filter by ID..."
+                  <input type="number"  placeholder="Filter by ID..." value={filter.id !== null ? filter.id : ""}
                     className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                     onChange={(e) => {
                       const filterText = e.target.value.toLowerCase();
@@ -99,7 +108,7 @@ export default function Home() {
                   <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">
                     User ID:
                   </label>
-                  <input type="number" placeholder="Filter by user ID..."
+                  <input type="number" placeholder="Filter by user ID..." value={filter.userId !== null ? filter.userId : ""}
                     className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                     onChange={(e) => {
                       const filterText = e.target.value.toLowerCase();
@@ -114,7 +123,7 @@ export default function Home() {
                   <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">
                     Filter by title:
                   </label>
-                  <input type="text"  placeholder="Filter by title..."
+                  <input type="text"  placeholder="Filter by title..." value={filter.title}
                     className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                     onChange={(e) => {
                       const filterText = e.target.value.toLowerCase();
@@ -126,7 +135,7 @@ export default function Home() {
                   <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">
                     Filter by body:
                   </label>
-                  <input type="text" placeholder="Filter by body..."
+                  <input type="text" placeholder="Filter by body..." value={filter.body}
                     className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                     onChange={(e) => {
                       const filterText = e.target.value.toLowerCase();
@@ -137,9 +146,12 @@ export default function Home() {
               </div>
             </div>
             <div className="text-right mt-3">
+              <button type="button"
+                className="cursor-pointer bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors mr-2" onClick={onReset}>
+                Reset
+              </button>
               <button type="submit"
-                className=" cursor-pointer inspiratia-bg-color text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"                
-              >
+                className=" cursor-pointer inspiratia-bg-color text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
                 Filter
               </button>
             </div>
