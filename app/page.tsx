@@ -1,8 +1,11 @@
 'use client';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
+import ReactPaginate from 'react-paginate';
+
+
 
 // https://jsonplaceholder.typicode.com/posts
 class Item {
@@ -21,11 +24,14 @@ class Item {
 
 export default function Home() {
   const [data, setData]  = useState<Item[]>([]);
+  const [dataDisplay, setDataDisplay] = useState<Item[]>([]);
+  const currentPageRef = useRef(0);
   useEffect(() => {
     ( async () => {
       try{
         const response = await axios.get("https://jsonplaceholder.typicode.com/posts");
         setData(response.data);
+        setDataDisplay(response.data.splice(0, 10));
       }catch(err){
         console.error(err);
         alert("Error fetching data. Please check the console for details.");
@@ -33,11 +39,9 @@ export default function Home() {
     })()
   }, []);
 
-  console.log(data);
+  return <div className="h-full flex flex-col">
 
-  return <div className="h-full">
-
-          <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+          <div className="overflow-auto rounded-lg border border-gray-200 shadow-sm flex-1">
             <table className="min-w-full divide-y divide-gray-200 bg-white">
               <thead className="bg-gray-50">
                 <tr>
@@ -57,7 +61,7 @@ export default function Home() {
               </thead>
 
               <tbody className="divide-y divide-gray-200">
-                {data.map((item) => (
+                {dataDisplay.map((item) => (
                   <tr key={item.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
                       {item.id}
@@ -78,7 +82,27 @@ export default function Home() {
               </tbody>
             </table>
           </div>
-
-
+          <div className="w-full">
+            <div className="ml-auto mt-4 w-1/2 flex justify-end pr-3">
+            <ReactPaginate
+              className="inspiratia-pagination"
+              previousLabel={"previous"}
+              nextLabel={"next"}
+              breakLabel={"..."}
+              forcePage={currentPageRef.current}
+              pageCount={Math.ceil(data.length / 10)}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+              onPageChange={(selectedItem) => {
+                const start = selectedItem.selected * 10;
+                const end = start + 10;
+                setDataDisplay(data.slice(start, end));
+                currentPageRef.current = selectedItem.selected;
+              }}
+              containerClassName={"pagination"}
+              activeClassName={"active"}
+            />
+          </div>
+        </div>
   </div>
 }

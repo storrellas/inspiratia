@@ -24,3 +24,44 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.sidebar{
+   background-color: rgb(61, 89, 168);
+}
+
+.inspiratia-pagination {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+
+.inspiratia-pagination li{
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.inspiratia-pagination li a{
+  padding: 8px 16px;
+  border: 1px solid #d8dbe0;    
+  border-right: 0px;
+  width: 100%;
+  color: #3c4b64;
+  text-decoration: none;
+  cursor: pointer;
+}
+.inspiratia-pagination li.active:not(.prev):not(.next) a{
+  background-color: rgb(61, 89, 168) !important;
+  color: white;
+}
+.inspiratia-pagination :hover{
+  background-color: #d8dbe0;
+}
+.inspiratia-pagination li:first-child a{
+  border-radius: 5px 0 0 5px;
+}
+.inspiratia-pagination li:last-child a{
+  border-right: 1px solid #d8dbe0 !important;
+  border-radius: 0 5px 5px 0;
+}
