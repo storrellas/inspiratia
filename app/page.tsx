@@ -9,12 +9,12 @@ import ReactPaginate from 'react-paginate';
 
 // https://jsonplaceholder.typicode.com/posts
 class Item {
-  id: number;
-  userId: number;
+  id: number | null;
+  userId: number | null;
   title: string;
   body: string;
 
-  constructor(id: number, userId: number, title: string, body: string) {
+  constructor(id: number | null, userId: number | null, title: string, body: string) {
     this.id = id;
     this.userId = userId;
     this.title = title;
@@ -25,23 +25,37 @@ class Item {
 
 
 export default function Home() {
-  const [data, setData]  = useState<Item[]>([]);
+  const dataFull = useRef<Item[]>([]);
+  const [data, setData]  = useState<Item[]>([]);  
   const [dataDisplay, setDataDisplay] = useState<Item[]>([]);
-  const [filter, setFilter] = useState<Item>(new Item(0, 0, "", ""));
+  const [filter, setFilter] = useState<Item>(new Item(null, null, "", ""));
   const currentPageRef = useRef(0);
 
   // ------------------------------
   // Handlers
   // ------------------------------
-  const onFilter = () => {
-    const filteredData = data.filter(item =>
-      item.title.toLowerCase().includes(filter.title.toLowerCase()) &&
-      item.body.toLowerCase().includes(filter.body.toLowerCase()) &&
-      (filter.id === 0 || item.id === filter.id) &&
-      (filter.userId === 0 || item.userId === filter.userId)
-    );
-    setDataDisplay(filteredData.slice(0, 10));
+  const onFilter = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    let dataFullLocal = JSON.parse(JSON.stringify(dataFull.current));
+    console.log("Filtering data with filter:", typeof(filter.id));
+    if( filter.id )
+      dataFullLocal = dataFullLocal.filter((item: Item) => item.id === filter.id);
+    if( filter.userId)
+      dataFullLocal = dataFullLocal.filter((item: Item) => item.userId === filter.userId);
+    if( filter.title.length > 0)
+      dataFullLocal = dataFullLocal.filter((item: Item) => item.title.toLowerCase().includes(filter.title.toLowerCase()));
+    if( filter.body.length > 0)
+      dataFullLocal = dataFullLocal.filter((item: Item) => item.body.toLowerCase().includes(filter.body.toLowerCase()));
+
+
+    console.log("Filtered data:", dataFullLocal, dataFull.current);
+
+    setData(dataFullLocal);
+    setDataDisplay(dataFullLocal.slice(0, 10));
     currentPageRef.current = 0; // Reset to first page
+
+    setFilter(new Item(null, null, "", ""));
   };
 
   // ------------------------------
@@ -52,6 +66,7 @@ export default function Home() {
     ( async () => {
       try{
         const response = await axios.get("https://jsonplaceholder.typicode.com/posts");
+        dataFull.current = response.data;
         setData(response.data);
         setDataDisplay(response.data.splice(0, 10));
       }catch(err){
@@ -63,9 +78,10 @@ export default function Home() {
 
   return <div className="h-full flex flex-col">
           <div className="rounded-lg border border-gray-200 shadow-sm p-5 mb-4">
+            <form onSubmit={onFilter}>
             {/* <h1 className="text-xl font-bold mb-2">Filtering</h1> */}
             <div className="gap-3">
-              
+             
               <div className="flex gap-3 w-full">
                 <div className="w-1/2">
                   <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">
@@ -121,13 +137,13 @@ export default function Home() {
               </div>
             </div>
             <div className="text-right mt-3">
-              <button
-                className=" cursor-pointer inspiratia-bg-color text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                onClick={onFilter}
+              <button type="submit"
+                className=" cursor-pointer inspiratia-bg-color text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"                
               >
                 Filter
               </button>
             </div>
+            </form> 
           </div>
           <div className="overflow-auto rounded-lg border border-gray-200 shadow-sm flex-1">
             <table className="min-w-full divide-y divide-gray-200 bg-white">
