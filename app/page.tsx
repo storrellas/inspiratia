@@ -31,6 +31,7 @@ export default function Home() {
   const [filter, setFilter] = useState<Item>(new Item(null, null, "", ""));
   const currentPageRef = useRef(0);
   const [showFilter, setShowFilter] = useState(false);
+  const [pageSize, setPageSize] = useState(10);
 
   // ------------------------------
   // Handlers
@@ -52,19 +53,26 @@ export default function Home() {
 
 
     setData(dataFullLocal);
-    setDataDisplay(dataFullLocal.slice(0, 10));
+    setDataDisplay(dataFullLocal.slice(0, pageSize));
     currentPageRef.current = 0; // Reset to first page
 
     // setFilter(new Item(null, null, "", ""));
   };
 
   const onReset = () => {
-    console.log("Resetting filter and data display");
     setFilter(new Item(null, null, "", ""));
     setData(dataFull.current);
-    setDataDisplay(dataFull.current.slice(0, 10));
+    setDataDisplay(dataFull.current.slice(0, pageSize));
     currentPageRef.current = 0; // Reset to first page
   }
+
+  const onChangePageSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSize = Number(e.target.value);
+    setPageSize(newSize);
+    setDataDisplay(data.slice(0, newSize));
+    currentPageRef.current = 0; // Reset to first page
+  }
+
 
   // ------------------------------
   // Hooks
@@ -214,20 +222,30 @@ export default function Home() {
               </tbody>
             </table>
           </div>
-          <div className="w-full">
-            <div className="ml-auto mt-4 w-1/2 flex justify-end pr-3">
+          <div className="w-full flex mt-4">
+            <div className="flex w-1/2 items-center justify-start gap-3">
+              <label className="w-1/3" htmlFor="pageSize">Page Size:</label>
+              <select id="pageSize" className="w-1/3 rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                value={pageSize} onChange={onChangePageSize}>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+            </div>
+            <div className="ml-auto w-1/2 flex justify-end pr-3 items-center">
             <ReactPaginate
               className="inspiratia-pagination"
               previousLabel={"previous"}
               nextLabel={"next"}
               breakLabel={"..."}
               forcePage={currentPageRef.current}
-              pageCount={Math.ceil(data.length / 10)}
+              pageCount={Math.ceil(data.length / pageSize)}
               marginPagesDisplayed={2}
               pageRangeDisplayed={5}
               onPageChange={(selectedItem) => {
-                const start = selectedItem.selected * 10;
-                const end = start + 10;
+                const start = selectedItem.selected * pageSize;
+                const end = start + pageSize;
                 setDataDisplay(data.slice(start, end));
                 currentPageRef.current = selectedItem.selected;
               }}
