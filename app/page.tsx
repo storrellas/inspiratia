@@ -4,10 +4,10 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import ReactPaginate from 'react-paginate';
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import AnimateHeight from "react-animate-height";
 
 
-
-// https://jsonplaceholder.typicode.com/posts
 class Item {
   id: number | null;
   userId: number | null;
@@ -30,6 +30,7 @@ export default function Home() {
   const [dataDisplay, setDataDisplay] = useState<Item[]>([]);
   const [filter, setFilter] = useState<Item>(new Item(null, null, "", ""));
   const currentPageRef = useRef(0);
+  const [showFilter, setShowFilter] = useState(false);
 
   // ------------------------------
   // Handlers
@@ -83,80 +84,95 @@ export default function Home() {
     })()
   }, []);
 
-  console.log("filter:", filter);
-
   return <div className="h-full flex flex-col">
-          <div className="rounded-lg border border-gray-200 shadow-sm p-5 mb-4">
-            <form onSubmit={onFilter}>
-            {/* <h1 className="text-xl font-bold mb-2">Filtering</h1> */}
-            <div className="gap-3">
-             
-              <div className="flex gap-3 w-full">
-                <div className="w-1/2">
-                  <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">
-                    ID:
-                  </label>
-                  <input type="number"  placeholder="Filter by ID..." value={filter.id !== null ? filter.id : ""}
-                    className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    onChange={(e) => {
-                      const filterText = e.target.value.toLowerCase();
-                      setFilter({ ...filter, id: Number(filterText) });
-                    }}
-                  />
-                </div>
-                <div className="w-1/2">
-                  <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">
-                    User ID:
-                  </label>
-                  <input type="number" placeholder="Filter by user ID..." value={filter.userId !== null ? filter.userId : ""}
-                    className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    onChange={(e) => {
-                      const filterText = e.target.value.toLowerCase();
-                      setFilter({ ...filter, userId: Number(filterText) });                  
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-3 w-full mt-3">
-                <div className="w-1/2">
-                  <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">
-                    Filter by title:
-                  </label>
-                  <input type="text"  placeholder="Filter by title..." value={filter.title}
-                    className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    onChange={(e) => {
-                      const filterText = e.target.value.toLowerCase();
-                      setFilter({ ...filter, title: filterText });
-                    }}
-                  />
-                </div>
-                <div className="w-1/2">
-                  <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">
-                    Filter by body:
-                  </label>
-                  <input type="text" placeholder="Filter by body..." value={filter.body}
-                    className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    onChange={(e) => {
-                      const filterText = e.target.value.toLowerCase();
-                      setFilter({ ...filter, body: filterText });                  
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="text-right mt-3">
-              <button type="button"
-                className="cursor-pointer bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors mr-2" onClick={onReset}>
-                Reset
-              </button>
-              <button type="submit"
-                className=" cursor-pointer inspiratia-bg-color text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-                Filter
-              </button>
-            </div>
-            </form> 
+          {!showFilter &&  
+          <div className="text-right">
+            <div className="inline-block text-gray-600 text-lg font-semibold mb-2 cursor-pointer" onClick={() => setShowFilter(!showFilter)}>
+              <i className="fa-solid fa-filter"></i>
+            </div>            
           </div>
+          }
+          <AnimateHeight duration={300} height={showFilter ? 'auto' : 0}>
+            <div className="rounded-lg border border-gray-200 shadow-sm p-5 mb-4">
+              
+              <form onSubmit={onFilter}>
+              <div className="flex justify-between">   
+              <h1 className="text-xl font-bold mb-2">Filtering</h1>
+                <div className="text-right">
+                  <div className="inline-block text-gray-600 text-lg font-semibold mb-2 cursor-pointer" onClick={() => setShowFilter(!showFilter)}>
+                    <i className="fa-solid fa-times"></i>
+                  </div>            
+                </div>
+              </div>
+              <div className="gap-3">
+              
+                <div className="flex gap-3 w-full">
+                  <div className="w-1/2">
+                    <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">
+                      ID:
+                    </label>
+                    <input type="number"  placeholder="Filter by ID..." value={filter.id !== null ? filter.id : ""}
+                      className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      onChange={(e) => {
+                        const filterText = e.target.value.toLowerCase();
+                        setFilter({ ...filter, id: Number(filterText) });
+                      }}
+                    />
+                  </div>
+                  <div className="w-1/2">
+                    <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">
+                      User ID:
+                    </label>
+                    <input type="number" placeholder="Filter by user ID..." value={filter.userId !== null ? filter.userId : ""}
+                      className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      onChange={(e) => {
+                        const filterText = e.target.value.toLowerCase();
+                        setFilter({ ...filter, userId: Number(filterText) });                  
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-3 w-full mt-3">
+                  <div className="w-1/2">
+                    <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">
+                      Filter by title:
+                    </label>
+                    <input type="text"  placeholder="Filter by title..." value={filter.title}
+                      className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      onChange={(e) => {
+                        const filterText = e.target.value.toLowerCase();
+                        setFilter({ ...filter, title: filterText });
+                      }}
+                    />
+                  </div>
+                  <div className="w-1/2">
+                    <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">
+                      Filter by body:
+                    </label>
+                    <input type="text" placeholder="Filter by body..." value={filter.body}
+                      className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      onChange={(e) => {
+                        const filterText = e.target.value.toLowerCase();
+                        setFilter({ ...filter, body: filterText });                  
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="text-right mt-3">
+                <button type="button"
+                  className="cursor-pointer bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors mr-2" onClick={onReset}>
+                  Reset
+                </button>
+                <button type="submit"
+                  className=" cursor-pointer inspiratia-bg-color text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
+                  Filter
+                </button>
+              </div>
+              </form> 
+            </div>
+          </AnimateHeight>
           <div className="overflow-auto rounded-lg border border-gray-200 shadow-sm flex-1">
             <table className="min-w-full divide-y divide-gray-200 bg-white">
               <thead className="bg-gray-50">
