@@ -5,8 +5,13 @@ import { useState, useEffect } from "react";
 type User = {
   name: string;
   email: string;
+};
+
+type UserForm = {
+  name: string;
+  email: string;
   password: string;
-  confirmPassword: string;
+  confirmPassword: string ;
 };
 
 type ModalUserProps = {
@@ -17,7 +22,7 @@ type ModalUserProps = {
 
 const ModalUser = ({ user, show, onClose }: ModalUserProps) => {
   
-  const [userData, setUserData] = useState<User>({
+  const [userData, setUserData] = useState<UserForm>({
     name: user ? user.name : "",
     email: user ? user.email : "",
     password: "",

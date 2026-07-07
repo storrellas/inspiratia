@@ -16,7 +16,8 @@ const Header = () => {
                   Hello, <span className="font-bold">User</span>
                   <Image src="/user.svg" alt="Description" width={30} height={30} className="inline-block ml-2" />
                 </div>
-                <ModalUser show={showModal} onClose={() => setShowModal(false)} user={{name: "User", email: "email@mail.com", password: "password"}} />  
+                <ModalUser show={showModal} onClose={() => setShowModal(false)} 
+                  user={{name: "Frank Sinatra", email: "email@mail.com" }} />  
               </nav>
 }
 
