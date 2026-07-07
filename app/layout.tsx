@@ -36,7 +36,7 @@ export default function RootLayout({
       <main className="flex w-screen h-screen">
         <section className="w-1/8 text-white font-bold min-w-48 inspiratia-bg-color">          
           <div className="p-3 pt-6">
-            <Image src="/inspiratia_logo.svg" alt="Description" width={200} height={100} />
+            <Image src="/inspiratia_logo.svg" alt="Description" width={200} height={100} loading="eager" />
           </div>
           <div className="text-lightgray font-bold p-3 text-center">
             <Link href="#">Users</Link>

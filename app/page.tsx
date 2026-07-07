@@ -6,6 +6,7 @@ import Link from "next/link";
 import ReactPaginate from 'react-paginate';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Item from "@/app/_components/models/Item";
+import Filtering from "@/app/_components/Filtering";
 
 
 
@@ -84,7 +85,10 @@ export default function Home() {
           <div className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${showFilter ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
             <div className="overflow-hidden">
               <div className="rounded-lg border border-gray-200 shadow-sm p-5 mb-4 overflow-hidden">              
-                <Filtering onFilter={onFilter} onReset={onReset} />
+                <Filtering 
+                  onFilter={onFilter} 
+                  onReset={onReset} 
+                  onHide={() => setShowFilter(false)} />
               </div>
             </div>              
           </div>

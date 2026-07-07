@@ -1,8 +1,10 @@
 'use client'
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
 import { useState } from "react";
 import Item from "@/app/_components/models/Item";
 
-const Filtering = ({ onFilter, onReset }: { onFilter: (filter: Item) => void, onReset: () => void }) => {
+const Filtering = ({ onFilter, onReset, onHide }: { onFilter: (filter: Item) => void, onReset: () => void, onHide: () => void }) => {
   const [filter, setFilter] = useState<Item>(new Item(null, null, "", ""));
 
   const onFilterLocal = (e: React.FormEvent<HTMLFormElement>) => {
@@ -19,6 +21,7 @@ const Filtering = ({ onFilter, onReset }: { onFilter: (filter: Item) => void, on
     <form onSubmit={onFilterLocal}>
       <div className="flex justify-between">   
         <h1 className="text-xl font-bold mb-2">Filtering</h1>
+        <i className="fas fa-times text-lg mt-1 cursor-pointer" onClick={onHide}></i>
       </div>
       <div className="gap-3">
         <div className="flex gap-3 w-full">
