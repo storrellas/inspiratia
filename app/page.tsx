@@ -24,9 +24,10 @@ class Item {
 
 
 export default function Home() {
-  const dataFull = useRef<Item[]>([]);
-  const [data, setData]  = useState<Item[]>([]);  
-  const [dataDisplay, setDataDisplay] = useState<Item[]>([]);
+  const data = useRef<Item[]>([]);
+  const [dataFiltered, setDataFiltered]  = useState<Item[]>([]);  
+  const dataFilteredRef = useRef<Item[]>([]);
+  const [dataDisplay, setDataDisplay] = useState<{ data: Item[]; page: number, count: number }>({ data: [], page: 1, count: 0 });
   const [filter, setFilter] = useState<Item>(new Item(null, null, "", ""));
   const currentPageRef = useRef(0);
   const [showFilter, setShowFilter] = useState(false);
@@ -38,7 +39,7 @@ export default function Home() {
   const onFilter = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let dataFullLocal = JSON.parse(JSON.stringify(dataFull.current));
+    let dataFullLocal = JSON.parse(JSON.stringify(data.current));
     console.log("Filtering data with filter:", filter);
     if( filter.id !== null && filter.id != 0 ) {
       dataFullLocal = dataFullLocal.filter((item: Item) => item.id === filter.id);
@@ -51,24 +52,24 @@ export default function Home() {
       dataFullLocal = dataFullLocal.filter((item: Item) => item.body.toLowerCase().includes(filter.body.toLowerCase()));
 
 
-    setData(dataFullLocal);
-    setDataDisplay(dataFullLocal.slice(0, pageSize));
+    // setDataFiltered(dataFullLocal);
+    dataFilteredRef.current = dataFullLocal;
+    setDataDisplay({ data: dataFullLocal.slice(0, pageSize), page: 1, count: dataFullLocal.length });
     currentPageRef.current = 0; // Reset to first page
-
-    // setFilter(new Item(null, null, "", ""));
   };
 
   const onReset = () => {
     setFilter(new Item(null, null, "", ""));
-    setData(dataFull.current);
-    setDataDisplay(dataFull.current.slice(0, pageSize));
+    // setDataFiltered(data.current);
+    dataFilteredRef.current = data.current;
+    setDataDisplay({ data: data.current.slice(0, pageSize), page: 1, count: data.current.length });
     currentPageRef.current = 0; // Reset to first page
   }
 
   const onChangePageSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSize = Number(e.target.value);
     setPageSize(newSize);
-    setDataDisplay(data.slice(0, newSize));
+    setDataDisplay({ ...dataDisplay, data: dataFilteredRef.current.slice(0, newSize), page: 1 });
     currentPageRef.current = 0; // Reset to first page
   }
 
@@ -81,9 +82,10 @@ export default function Home() {
     ( async () => {
       try{
         const response = await axios.get("https://jsonplaceholder.typicode.com/posts");
-        dataFull.current = JSON.parse(JSON.stringify(response.data));
-        setData(dataFull.current);
-        setDataDisplay(dataFull.current.slice(0, 10));
+        data.current = JSON.parse(JSON.stringify(response.data));
+        // setDataFiltered(data.current);
+        dataFilteredRef.current = data.current;
+        setDataDisplay({ data: data.current.slice(0, 10), page: 1, count: data.current.length });
       }catch(err){
         console.error(err);
         alert("Error fetching data. Please check the console for details.");
@@ -201,7 +203,7 @@ export default function Home() {
               </thead>
 
               <tbody className="divide-y divide-gray-200">
-                {dataDisplay.map((item) => (
+                {dataDisplay.data.map((item) => (
                   <tr key={item.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
                       {item.id}
@@ -239,14 +241,17 @@ export default function Home() {
               previousLabel={"previous"}
               nextLabel={"next"}
               breakLabel={"..."}
-              forcePage={currentPageRef.current}
-              pageCount={Math.ceil(data.length / pageSize)}
+              forcePage={dataDisplay.page - 1}
+              pageCount={Math.ceil(dataDisplay.count / pageSize)}
               marginPagesDisplayed={2}
               pageRangeDisplayed={5}
               onPageChange={(selectedItem) => {
                 const start = selectedItem.selected * pageSize;
                 const end = start + pageSize;
-                setDataDisplay(data.slice(start, end));
+                setDataDisplay({ 
+                  data: dataFilteredRef.current.slice(start, end), 
+                  page: selectedItem.selected + 1, 
+                  count: dataFilteredRef.current.length });
                 currentPageRef.current = selectedItem.selected;
               }}
               containerClassName={"pagination"}
