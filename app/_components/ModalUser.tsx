@@ -7,9 +7,7 @@ type User = {
   email: string;
 };
 
-type UserForm = {
-  name: string;
-  email: string;
+type UserForm = User &{
   password: string;
   confirmPassword: string ;
 };
