@@ -10,11 +10,11 @@ import Filtering from "@/app/_components/Filtering";
 type ModalProps = {
   show: boolean;
   onClose: () => void;
-  item: Item;
+  item: Item | null;
 };
 
 const Modal = ({ item, show, onClose }: ModalProps) => {
-  if (!show) return null;
+  if (!show || !item) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
