@@ -17,12 +17,12 @@ const Sidebar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const onClick = (e) => {
+  const onClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
     dispatch(setTitle(e.currentTarget.textContent));
-    const href = e.currentTarget.getAttribute('href');
+    const href : string | null = e.currentTarget.getAttribute('href');
+    if( href === null || href === '#' ) return;
     router.push(href);
-
   }
 
   useEffect(() => {
