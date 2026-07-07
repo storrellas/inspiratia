@@ -7,10 +7,18 @@ type ModalProps = {
 };
 
 const ModalDetail = ({ item, show, onClose }: ModalProps) => {
-  if (!show || !item) return null;
+  //if (!item) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    return (
+    <div className={`
+        fixed inset-0 z-50 flex items-center justify-center
+        transition-all duration-300
+        ${
+          show
+            ? "visible bg-black/50 opacity-100"
+            : "invisible bg-black/0 opacity-0"
+        }
+      `} onClick={onClose}>
       <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
         <h2 className="mb-4 text-xl font-semibold">Detail</h2>
         <hr className="text-gray-300 mb-4"></hr>
