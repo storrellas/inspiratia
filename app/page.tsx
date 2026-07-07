@@ -14,8 +14,6 @@ export default function Home() {
   const data = useRef<Item[]>([]);
   const dataFilteredRef = useRef<Item[]>([]);
   const [dataDisplay, setDataDisplay] = useState<{ data: Item[]; page: number, count: number }>({ data: [], page: 1, count: 0 });
-  // const [filter, setFilter] = useState<Item>(new Item(null, null, "", ""));
-  const currentPageRef = useRef(0);
   const [showFilter, setShowFilter] = useState(false);
   const [pageSize, setPageSize] = useState(10);
 
@@ -38,20 +36,17 @@ export default function Home() {
     // setDataFiltered(dataFullLocal);
     dataFilteredRef.current = dataFullLocal;
     setDataDisplay({ data: dataFullLocal.slice(0, pageSize), page: 1, count: dataFullLocal.length });
-    currentPageRef.current = 0; // Reset to first page
   };
 
   const onReset = () => {
     dataFilteredRef.current = data.current;
     setDataDisplay({ data: data.current.slice(0, pageSize), page: 1, count: data.current.length });
-    currentPageRef.current = 0; // Reset to first page
   }
 
   const onChangePageSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSize = Number(e.target.value);
     setPageSize(newSize);
     setDataDisplay({ ...dataDisplay, data: dataFilteredRef.current.slice(0, newSize), page: 1 });
-    currentPageRef.current = 0; // Reset to first page
   }
 
 
@@ -64,7 +59,6 @@ export default function Home() {
       try{
         const response = await axios.get("https://jsonplaceholder.typicode.com/posts");
         data.current = JSON.parse(JSON.stringify(response.data));
-        // setDataFiltered(data.current);
         dataFilteredRef.current = data.current;
         setDataDisplay({ data: data.current.slice(0, 10), page: 1, count: data.current.length });
       }catch(err){
@@ -161,7 +155,6 @@ export default function Home() {
                   data: dataFilteredRef.current.slice(start, end), 
                   page: selectedItem.selected + 1, 
                   count: dataFilteredRef.current.length });
-                currentPageRef.current = selectedItem.selected;
               }}
               containerClassName={"pagination"}
               activeClassName={"active"}
