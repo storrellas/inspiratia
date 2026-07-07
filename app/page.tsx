@@ -7,6 +7,62 @@ import Item from "@/lib/models/Item";
 import Filtering from "@/app/_components/Filtering";
 
 
+type ModalProps = {
+  show: boolean;
+  onClose: () => void;
+  item: Item;
+};
+
+const Modal = ({ item, show, onClose }: ModalProps) => {
+  if (!show) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+        <h2 className="mb-4 text-xl font-semibold">Detail</h2>
+        <hr className="text-gray-300 mb-4"></hr>
+
+        <p className="mb-6 text-gray-600 mt-3">
+          <label htmlFor="title" className="block mb-2 font-medium text-gray-700 mt-3">
+            Id:
+          </label>
+          <input type="text" value={item.id} readOnly
+            className="w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+          <label htmlFor="title" className="block mb-2 font-medium text-gray-700 mt-3">
+            User Id:
+          </label>
+          <input type="text" value={item.userId} readOnly
+            className="w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"/>            
+          <label htmlFor="title" className="block mb-2 font-medium text-gray-700 mt-3">
+            Body:
+          </label>
+          <input type="text" value={item.body} readOnly
+            className="w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+          <label htmlFor="title" className="block mb-2 font-medium text-gray-700 mt-3">
+            Title:
+          </label>
+          <input type="text" value={item.title}  readOnly
+            className="w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+        </p>
+
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={onClose}
+            className="rounded bg-gray-200 px-4 py-2 hover:bg-gray-300 cursor-pointer">
+            Cancel
+          </button>
+
+          <button onClick={onClose}
+            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 export default function Home() {
   const data = useRef<Item[]>([]);
@@ -14,6 +70,8 @@ export default function Home() {
   const [dataDisplay, setDataDisplay] = useState<{ data: Item[]; page: number, count: number }>({ data: [], page: 1, count: 0 });
   const [showFilter, setShowFilter] = useState(false);
   const [pageSize, setPageSize] = useState(10);
+  const [showModalDetails, setShowModalDetails] = useState(false);  
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
   // ------------------------------
   // Handlers
@@ -47,6 +105,10 @@ export default function Home() {
     setDataDisplay({ ...dataDisplay, data: dataFilteredRef.current.slice(0, newSize), page: 1 });
   }
 
+  const onShowModalDetails = (item: Item) => {
+    setSelectedItem(item);
+    setShowModalDetails(true);
+  }
 
   // ------------------------------
   // Hooks
@@ -105,7 +167,8 @@ export default function Home() {
 
               <tbody className="divide-y divide-gray-200">
                 {dataDisplay.data.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50 transition-colors cursor-pointer">
+                  <tr key={item.id} className="hover:bg-gray-50 transition-colors cursor-pointer"
+                    onClick={() => onShowModalDetails(item)}>
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
                       {item.id}
                     </td>
@@ -159,5 +222,9 @@ export default function Home() {
             />
           </div>
         </div>
+        <Modal 
+          show={showModalDetails} 
+          onClose={() => setShowModalDetails(false)} 
+          item={selectedItem} />
   </div>
 }
