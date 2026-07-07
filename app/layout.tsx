@@ -27,6 +27,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const MENU_ITEMS = [
+    { title: 'Posts', href: '#', icon: 'fa-solid fa-file' },
+    { title: 'Articles', href: '#', icon: 'fa-solid fa-newspaper' },
+    { title: 'Users', href: '#', icon: 'fa-solid fa-users' },
+    { title: 'Settings', href: '#', icon: 'fa-solid fa-cog' },
+  ]
   return (
     <html
       lang="en"
@@ -34,17 +40,34 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
       <main className="flex w-screen h-screen">
-        <section className="w-1/8 text-white font-bold min-w-48 inspiratia-bg-color">          
-          <div className="p-3 pt-6">
-            <Image src="/inspiratia_logo.svg" alt="Description" width={200} height={100} loading="eager" />
-          </div>
-          <div className="text-lightgray font-bold p-3 text-center">
-            <Link href="#">Users</Link>
+        <section className="w-1/8 text-white font-bold min-w-48 inspiratia-bg-color flex flex-col justify-between">          
+          <div>
+            <div className="p-3 pt-6">
+              <Image src="/inspiratia_logo.svg" alt="Description" width={200} height={100} loading="eager" />
+            </div>
+            <div className="font-bold p-3 text-center flex flex-col p-8">
+              {MENU_ITEMS.map((item, index) => (
+                <div key={index} className="mb-3 ">
+                  <Link href={item.href} className="flex items-center gap-2 transition-colors text-lightgray hover:text-gray-400 ">
+                    <i className={`${item.icon} w-4`}></i>
+                    <span>{item.title}</span>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>            
+          <div>
+            <div className="p-3 text-center flex flex-col p-8">
+              <div className="text-lightgray text-sm cursor-pointer text-lightgray hover:text-gray-400 ">
+                <i className="fa-solid fa-right-from-bracket"></i> Logout 
+              </div>
+            </div>
           </div>
         </section>
         <section className="flex-1 bg-stone-100 flex flex-col min-w-0">
-          <nav className="w-full bg-gray-300 p-3 text-gray-800 text-end">
+          <nav className="w-full bg-gray-300 p-3 text-gray-800 text-end cursor-pointer">
             Hello, <span className="font-bold">User</span>
+            <Image src="/user.svg" alt="Description" width={30} height={30} className="inline-block ml-2" />
           </nav>
           <div className="p-5 flex-1 overflow-auto">
             <div className="bg-white p-5 rounded-lg shadow-md w-full h-full">

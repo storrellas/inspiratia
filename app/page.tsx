@@ -107,7 +107,7 @@ export default function Home() {
 
               <tbody className="divide-y divide-gray-200">
                 {dataDisplay.data.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={item.id} className="hover:bg-gray-50 transition-colors cursor-pointer">
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
                       {item.id}
                     </td>
@@ -141,8 +141,8 @@ export default function Home() {
             <div className="ml-auto w-1/2 flex justify-end pr-3 items-center">
             <ReactPaginate
               className="inspiratia-pagination"
-              previousLabel={"previous"}
-              nextLabel={"next"}
+              previousLabel={"<"}
+              nextLabel={">"}
               breakLabel={"..."}
               forcePage={dataDisplay.page - 1}
               pageCount={Math.ceil(dataDisplay.count / pageSize)}
