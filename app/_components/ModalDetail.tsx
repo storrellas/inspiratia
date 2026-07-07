@@ -7,9 +7,9 @@ type ModalProps = {
 };
 
 const ModalDetail = ({ item, show, onClose }: ModalProps) => {
-  //if (!item) return null;
+  if (!item) return null;
 
-    return (
+  return (
     <div className={`
         fixed inset-0 z-50 flex items-center justify-center
         transition-all duration-300
