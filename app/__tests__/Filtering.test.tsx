@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import Filtering from "./Filtering";
+import Filtering from "@/app/_components/Filtering";
 
 describe("Filtering", () => {
   it("submits the current filter values", () => {
