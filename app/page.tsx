@@ -1,11 +1,9 @@
 'use client';
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import Image from "next/image";
-import Link from "next/link";
 import ReactPaginate from 'react-paginate';
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import Item from "@/app/_components/models/Item";
+import Item from "@/lib/models/Item";
 import Filtering from "@/app/_components/Filtering";
 
 

@@ -2,7 +2,7 @@
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import { useState } from "react";
-import Item from "@/app/_components/models/Item";
+import Item from "@/lib/models/Item";
 
 const Filtering = ({ onFilter, onReset, onHide }: { onFilter: (filter: Item) => void, onReset: () => void, onHide: () => void }) => {
   const [filter, setFilter] = useState<Item>(new Item(null, null, "", ""));
