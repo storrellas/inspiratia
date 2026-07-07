@@ -129,7 +129,7 @@ export default function Home() {
           </div>
           <div className="w-full flex mt-4">
             <div className="flex w-1/2 items-center justify-start gap-3">
-              <label className="w-1/3" htmlFor="pageSize">Page Size:</label>
+              <label htmlFor="pageSize">Page Size:</label>
               <select id="pageSize" className="w-1/3 rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" 
                 value={pageSize} onChange={onChangePageSize}>
                 <option value={10}>10</option>
